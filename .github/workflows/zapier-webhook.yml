@@ -1,0 +1,27 @@
+name: Send to Zapier on Push
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  send-to-zapier:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Send custom message to Zapier
+        run: |
+          curl -X POST https://hooks.zapier.com/hooks/catch/{id}/ \
+            -H "Content-Type: application/json" \
+            -d '{
+              "message": "New workflow triggered",
+              "branch": "main",
+              "commit_sha": "${{ github.sha }}",
+              "commit_message": "${{ github.event.head_commit.message }}",
+              "author": "Gaurav",
+              "repository": "${{ github.repository }}",
+              "timestamp": "2026-02-14T09:16:22Z"
+            }'
